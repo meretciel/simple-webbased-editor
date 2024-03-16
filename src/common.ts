@@ -25,4 +25,14 @@ export function getCurrRange(): Range | null {
 export function getLinkTextInputElem(): HTMLInputElement {return document.getElementById("link_input_box_text")! as HTMLInputElement;}
 export function getLinkUrlInputElem(): HTMLInputElement {return document.getElementById("link_input_box_link")! as HTMLInputElement;}
 
+
+// Image Input Section
+
+export function getImageInputElem(): HTMLElement {return document.getElementById("image_input_box")!;}
+export function getImageFileInputElem(): HTMLInputElement {return document.getElementById("image_input_file")! as HTMLInputElement;}
+export function getImageWidthInputElem(): HTMLInputElement {return document.getElementById("image_input_width")! as HTMLInputElement;}
+export function getImageHeightInputElem(): HTMLInputElement {return document.getElementById("image_input_height")! as HTMLInputElement;}
+
+export function getImagePreview(): HTMLElement {return document.getElementById("image_input_box_preview")!;}
+
 export let STATE_MACHINE = new StateMachine();

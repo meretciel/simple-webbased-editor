@@ -15,9 +15,12 @@ export function submit_link() {
     common.logMessage(`Text: ${textElem.value}, Url: ${urlElem.value}`);
     document.getElementById("link_input_box")!.style.display = "none";
     let divElem = document.createElement("div");
+    divElem.classList.add("component_link");
     let aElem = document.createElement("a");
+    aElem.style.cursor = "pointer";
     divElem.appendChild(aElem);
     divElem.onclick = function() {
+        document.getElementById("link_input_box_delete")!.onclick = function() {delete_link(divElem);}
         document.getElementById("link_input_box")!.style.display = "block";
         let anchors = divElem.getElementsByTagName("a");
         if (anchors.length == 1) {
@@ -33,10 +36,17 @@ export function submit_link() {
     if (range !== null) {
         common.logMessage("Insert the link element.");
         range.insertNode(divElem);
-
+        let offset = range.startOffset;
+        let refNode = range.startContainer;
         let currRange = getCurrRange();
 
         if (currRange != null) {
+            // delete /link command in the div
+            currRange.setStart(refNode, offset - 5);
+            currRange.setEnd(refNode, offset);
+            currRange.deleteContents();
+
+            // Move the caret to the end of the link element.
             currRange.setEndAfter(divElem);
             currRange.setStartAfter(divElem);
         }
@@ -53,7 +63,8 @@ export function cancel_link(): void {
 
 }
 
-export function delete_link(): void {
+export function delete_link(elem: HTMLElement): void {
     common.logMessage("delete link.");
+    elem.remove();
     document.getElementById("link_input_box")!.style.display = "none";
 }

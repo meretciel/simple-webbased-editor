@@ -33,6 +33,11 @@
             cursor: pointer;
         }
 
+        div.component_link {
+            display: inline-block;
+            cursor: pointer;
+        }
+
     </style>
 
 </head>
@@ -56,11 +61,15 @@
 
 <script type="module">
     import {initialization} from "./dist/main.js";
-    import {submit_link, cancel_link, delete_link} from "./dist/link_input_box.js";
+    import {submit_link, cancel_link} from "./dist/link_input_box.js";
+
+    import {submitImage, cancelImage} from "./dist/image_input.js";
 
     window.submit_link = submit_link;
     window.cancel_link = cancel_link;
-    window.delete_link = delete_link;
+
+    window.submitImage = submitImage;
+    window.cancelImage = cancelImage;
 </script>
 
 <h3>Buffer</h3>
@@ -80,7 +89,29 @@
     </table>
     <div id="link_input_box_submit" class="button" onclick="submit_link()">Submit</div>
     <div id="link_input_box_cancel" class="button" onclick="cancel_link()">Cancel</div>
-    <div id="link_input_box_delete" class="button" onclick="delete_link()">Delete</div>
+    <div id="link_input_box_delete" class="button" >Delete</div>
+</div>
+
+
+<div id="image_input_box" style="display:none">
+    <table>
+        <tr>
+            <td><label>Image File:</label></td>
+            <td class="large"><input type="file" id="image_input_file" autocomplete="false"/></td>
+        </tr>
+        <tr>
+            <td><label>Width:</label></td>
+            <td class="large"><input type="text" id="image_input_width" value="100%"/></td>
+        </tr>
+        <tr>
+            <td><label>Height:</label></td>
+            <td class="large"><input type="text" id="image_input_height"/></td>
+        </tr>
+    </table>
+    <div id="image_input_box_submit" class="button" onclick="submitImage()">Submit</div>
+    <div id="image_input_box_cancel" class="button" onclick="cancelImage()">Cancel</div>
+    <div id="image_input_box_delete" class="button" >Delete</div>
+    <div id="image_input_box_preview"></div>
 </div>
 
 </html>

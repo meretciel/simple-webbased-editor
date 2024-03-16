@@ -25,11 +25,13 @@ export class StateMachine {
     inlineCommand: string | null;
     lastRange: Range | null;
 
+
     constructor() {
         this.state = State.IN_PARAGRAPH
         this.lastEvent = null;
         this.inlineCommand = null;
         this.lastRange = null;
+
     }
 
     notifyString(s: string) {
@@ -50,6 +52,11 @@ export class StateMachine {
             document.getElementById("link_input_box")!.style.display = "block";
 
             linkInputBoxText.focus();
+        } else if (this.inlineCommand === "/image") {
+            common.logMessage("Captured the /image command.");
+            this.lastRange = common.getCurrRange();
+            common.getImageInputElem().style.display = "block";
+
         }
     }
 
@@ -66,7 +73,8 @@ export class StateMachine {
             }
         } else if (this.state == State.TYPING_COMMAND_OR_STAY_IN_PARAGRAPH) {
             if (event == ActionEvent.START_COMMAND) {
-                this.state = State.TYPING_COMMAND
+                this.state = State.TYPING_COMMAND;
+                this.inlineCommand = "/";
             } else if (event == ActionEvent.PARAGRAPH_UPDATE) {
                 this.state = State.IN_PARAGRAPH;
             }
@@ -86,5 +94,10 @@ export class StateMachine {
         this.state = State.IN_PARAGRAPH;
         common.getLinkTextInputElem().value = "";
         common.getLinkUrlInputElem().value = "";
+    }
+
+    reset() {
+        this.inlineCommand = "";
+        this.state = State.IN_PARAGRAPH;
     }
 }
