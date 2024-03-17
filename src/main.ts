@@ -26,7 +26,6 @@ class DivElement implements ElemRange {
 }
 
 function divOnChange(event: InputEvent, stateMachine: StateMachine) {
-    console.log("div element changes.")
 
     if (event.inputType === "insertLineBreak") {
         stateMachine.toNextState(ActionEvent.ENTRY_KEY_PRESS);
@@ -47,15 +46,16 @@ function handleKeyDownEvent(event: KeyboardEvent, stateMachine: StateMachine) {
     if (event.key === "Enter") {
         common.appendMessage("Detected enter key.");
         event.preventDefault();
-        let selection = window.getSelection();
-        if (selection !== null) {
-            let range = selection.getRangeAt(0);
-            let node = document.createElement("br");
-            range.insertNode(node);
-            range.setEndAfter(node);
-            range.setStartAfter(node);
-            stateMachine.toNextState(ActionEvent.ENTRY_KEY_PRESS);
-        }
+        stateMachine.toNextState(ActionEvent.ENTRY_KEY_PRESS);
+
+        // let selection = window.getSelection();
+        // if (selection !== null) {
+        //     let range = selection.getRangeAt(0);
+        //     let node = document.createElement("br");
+        //     range.insertNode(node);
+        //     range.setEndAfter(node);
+        //     range.setStartAfter(node);
+        // }
     } else if (event.key === "`") {
         stateMachine.toNextState(ActionEvent.APOSTROPHE_KEY_PRESS);
         if (stateMachine.state === State.IN_PARAGRAPH) {
@@ -65,6 +65,13 @@ function handleKeyDownEvent(event: KeyboardEvent, stateMachine: StateMachine) {
         if (PRESSED_KEYS.has("Control")) {
             event.preventDefault();
             stateMachine.toNextState(ActionEvent.TOGGLE_BOLD)
+        }
+    } else if (event.key === "Tab") {
+        event.preventDefault();
+        if (PRESSED_KEYS.has("Shift")) {
+            stateMachine.toNextState(ActionEvent.EXIT_LIST_ONE_LEVEL);
+        } else {
+            stateMachine.toNextState(ActionEvent.TAB_KEY_PRESS);
         }
     }
 

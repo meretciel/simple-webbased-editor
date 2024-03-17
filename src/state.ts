@@ -7,11 +7,14 @@ export enum State {
     TYPING_COMMAND,
     ENTERING_LINK_INFO,
     INLINE_QUOTE_MODE,
+    IN_LIST,
 }
 
 export enum ActionEvent {
     ENTRY_KEY_PRESS,
     APOSTROPHE_KEY_PRESS,
+    TAB_KEY_PRESS,
+    EXIT_LIST_ONE_LEVEL,
     NORMAL_KEY_PRESS,
     PARAGRAPH_UPDATE,
     CLICK,
@@ -27,6 +30,7 @@ export class StateMachine {
     lastEvent: ActionEvent | null;
     inlineCommand: string | null;
     lastRange: Range | null;
+    listLevel: number;
 
 
     constructor() {
@@ -34,6 +38,7 @@ export class StateMachine {
         this.lastEvent = null;
         this.inlineCommand = null;
         this.lastRange = null;
+        this.listLevel = 0;
 
     }
 
@@ -65,6 +70,10 @@ export class StateMachine {
             common.logMessage("Captured /code command.");
             this.lastRange = common.getCurrRange();
             common.getCodeInputElem().style.display = "blocK";
+        } else if (this.inlineCommand === "/list") {
+            common.logMessage("Captured /list command.");
+            this.handleStartOfListCommand();
+            this.state = State.IN_LIST;
         }
     }
 
@@ -74,6 +83,7 @@ export class StateMachine {
 
         if (this.state == State.IN_PARAGRAPH) {
             if (event == ActionEvent.ENTRY_KEY_PRESS) {
+                this.handleEnterKeyInParagraph()
                 this.inlineCommand = "";
             } else if (event == ActionEvent.START_COMMAND) {
                 this.inlineCommand = "/"
@@ -88,6 +98,14 @@ export class StateMachine {
                 this.handleInlineQuote();
                 this.state = State.IN_PARAGRAPH;
             }
+        } else if (this.state === State.IN_LIST) {
+            if (event === ActionEvent.ENTRY_KEY_PRESS) {
+                this.handleEnterKeyInList();
+            } else if (event === ActionEvent.TAB_KEY_PRESS) {
+                this.handleTabKeyInList();
+            } else if (event === ActionEvent.EXIT_LIST_ONE_LEVEL) {
+                this.handleExistListOneLevel();
+            }
         }
 
 
@@ -96,6 +114,14 @@ export class StateMachine {
         document.getElementById("state")!.innerText = currentStateName;
         document.getElementById("event")!.innerText = eventName;
         console.log(`StateMachine: received event ${eventName}. Transit from ${prevStateName} to ${currentStateName}. inlineCommand=${this.inlineCommand}`);
+    }
+
+    handleEnterKeyInParagraph() {
+        let range = common.getCurrRange()!;
+        let node = document.createElement("br");
+        range.insertNode(node);
+        range.setEndAfter(node);
+        range.setStartAfter(node);
     }
 
     handleInlineQuote() {
@@ -172,6 +198,81 @@ export class StateMachine {
 
 
             }
+        }
+    }
+
+    handleStartOfListCommand() {
+        console.log("handle start of the list command.")
+        let range = common.getCurrRange()!;
+        let refNode = range.startContainer;
+        let offset = range.startOffset;
+        range.setStart(refNode, offset - 5);
+        range.deleteContents();
+
+        let node = document.createElement("ul");
+        let item = document.createElement("li");
+        this.listLevel += 1;
+        node.appendChild(item);
+        range.insertNode(node);
+        range.selectNodeContents(item);
+    }
+
+    handleEnterKeyInList() {
+        console.log("handleEnterKeyInList")
+        let range = common.getCurrRange()!;
+        let textNode = range.startContainer; // this is the text node inside the <li></li>
+        let refNode = textNode.parentNode!; // this is the <li></li> node.
+        console.log("refNode name: " + refNode.nodeName + ",item content: " + refNode.textContent);
+        range.setEndAfter(refNode);
+        range.setStartAfter(refNode);
+        let item = document.createElement("li");
+        range.insertNode(item);
+        range.selectNodeContents(item);
+    }
+
+    handleTabKeyInList() {
+        let range = common.getCurrRange()!;
+        let refNode = range?.startContainer!;
+        if (refNode.nodeName === "LI") {
+            range.selectNode(refNode);
+            range.deleteContents();
+            let node = document.createElement("ul");
+            let item = document.createElement("li");
+            this.listLevel += 1;
+            node.appendChild(item);
+            range.insertNode(node);
+            range.selectNodeContents(item);
+        }
+    }
+
+    handleExistListOneLevel() {
+        if (this.listLevel == 0) {return;}
+        console.log("Exist one level in list");
+        this.listLevel -= 1;
+
+        // When this method is called, the cursor is in the middle of the <li>|</li>
+        let range = common.getCurrRange()!;
+        let refNode = range.startContainer;
+        let currentLevelListElement = refNode.parentNode!;
+        range.selectNode(refNode);
+        range.deleteContents(); // delete the last item
+
+        if (this.listLevel == 0) {
+            // We are exiting from the root level list
+            range.setEndAfter(currentLevelListElement);
+            range.setStartAfter(currentLevelListElement);
+            this.state = State.IN_PARAGRAPH;
+        } else {
+            // Move to the previous level:
+            let previousLevelListElement = currentLevelListElement.parentNode!;
+            let m = previousLevelListElement.childNodes.length;
+
+            let lastChild = previousLevelListElement.childNodes[m-1];
+            range.setEndAfter(lastChild);
+            range.setStartAfter(lastChild);
+            let item = document.createElement("li");
+            range.insertNode(item);
+            range.selectNodeContents(item);
         }
     }
 
