@@ -21,6 +21,10 @@ export function getCurrRange(): Range | null {
 }
 
 
+export function getEditingSpaceElem(): HTMLElement {return document.getElementById("editing-space")! as HTMLElement;}
+export function focusOnEditingSpace(): void {
+    getEditingSpaceElem().focus();
+}
 
 export function getLinkTextInputElem(): HTMLInputElement {return document.getElementById("link_input_box_text")! as HTMLInputElement;}
 export function getLinkUrlInputElem(): HTMLInputElement {return document.getElementById("link_input_box_link")! as HTMLInputElement;}
@@ -34,5 +38,10 @@ export function getImageWidthInputElem(): HTMLInputElement {return document.getE
 export function getImageHeightInputElem(): HTMLInputElement {return document.getElementById("image_input_height")! as HTMLInputElement;}
 
 export function getImagePreview(): HTMLElement {return document.getElementById("image_input_box_preview")!;}
+
+// Code Input Section
+export function getCodeInputElem(): HTMLElement {return document.getElementById("code_input_box")! as HTMLElement;}
+export function getCodeInputLanguage(): HTMLInputElement {return document.getElementById("code_input_language")! as HTMLInputElement;}
+export function getCodeInputSourceCode(): HTMLInputElement {return document.getElementById("code_input_source_code")! as HTMLInputElement;}
 
 export let STATE_MACHINE = new StateMachine();

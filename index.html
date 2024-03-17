@@ -4,7 +4,63 @@
 
     <title>Page Title</title>
 
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github-gist.min.css" rel="stylesheet"></link>
+    <script async="" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML" type="text/javascript"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.4.0/languages/go.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js" type="text/javascript"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/swift.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/rust.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/html.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/yaml.min.js"></script>
+
+    <script>hljs.initHighlightingOnLoad();</script>
+
+
     <style>
+
+        pre code {
+            overflow: auto;
+        }
+
+        div.code-box {
+            padding: 0px;
+            position: relative;
+            left: -24px;
+            margin-top: 20px;
+        }
+
+        div.code-box div.line-number {
+            display: inline-block;
+            vertical-align: top;
+
+            line-height: 15px;
+            font-size: 11px;
+            padding-top: 0px;
+            padding-left: 0px;
+            pading-right:0px;
+            text-align: right;
+            color: #CDCDCD;
+            width: 4%;
+        }
+
+        div.code-box pre {
+            display: inline-block;
+            vertical-align: top;
+            margin-top: 0px;
+            width: 95%;
+            font-size: 12px;
+            border: 1px solid #4285C0;
+        }
+
+
+
+
         div#main {
             width: 80vw;
             margin: auto;
@@ -38,6 +94,7 @@
             cursor: pointer;
         }
 
+
     </style>
 
 </head>
@@ -64,12 +121,15 @@
     import {submit_link, cancel_link} from "./dist/link_input_box.js";
 
     import {submitImage, cancelImage} from "./dist/image_input.js";
+    import {submitCode, cancelCode} from "./dist/code_input.js"
 
     window.submit_link = submit_link;
     window.cancel_link = cancel_link;
 
     window.submitImage = submitImage;
     window.cancelImage = cancelImage;
+    window.submitCode = submitCode;
+    window.cancelCode = cancelCode;
 </script>
 
 <h3>Buffer</h3>
@@ -113,5 +173,27 @@
     <div id="image_input_box_delete" class="button" >Delete</div>
     <div id="image_input_box_preview"></div>
 </div>
+
+
+
+<div id="code_input_box" style="display:none">
+
+    <table>
+    <tr>
+        <td><label>Language:</label></td>
+        <td class="large"><input type="text" id="code_input_language" autocomplete="false"/></td>
+    </tr>
+    </table>
+
+    <label>Code:</label>
+    <div>
+        <textarea id="code_input_source_code" cols="90" rows="20"></textarea>
+    </div>
+
+    <div id="code_input_box_submit" class="button" onclick="submitCode()">Submit</div>
+    <div id="code_input_box_cancel" class="button" onclick="cancelCode()">Cancel</div>
+    <div id="code_input_box_delete" class="button" >Delete</div>
+</div>
+
 
 </html>

@@ -1,7 +1,5 @@
-
-import * as StringUtils from './StringUtils.js';
 import * as common from "./common.js";
-import {StateMachine, ActionEvent, State} from "./state.js";
+import {ActionEvent, State, StateMachine} from "./state.js";
 
 console.log("This is a test")
 
@@ -56,6 +54,11 @@ function handleKeyDownEvent(event: KeyboardEvent, stateMachine: StateMachine) {
             range.setStartAfter(node);
             stateMachine.toNextState(ActionEvent.ENTRY_KEY_PRESS);
         }
+    } else if (event.key === "`") {
+        stateMachine.toNextState(ActionEvent.APOSTROPHE_KEY_PRESS);
+        if (stateMachine.state === State.IN_PARAGRAPH) {
+            event.preventDefault();
+        }
     }
 }
 
@@ -73,6 +76,7 @@ class ContentManager {
             console.log("main element is null");
         }
         let elem = document.createElement("div");
+        elem.id = "editing-space";
         elem.contentEditable = "true";
         elem.style.minHeight = "1em";
         elem.innerHTML="<br>";

@@ -6,15 +6,18 @@ export enum State {
     TYPING_COMMAND_OR_STAY_IN_PARAGRAPH,
     TYPING_COMMAND,
     ENTERING_LINK_INFO,
+    INLINE_QUOTE_MODE,
 }
 
 export enum ActionEvent {
     ENTRY_KEY_PRESS,
+    APOSTROPHE_KEY_PRESS,
     NORMAL_KEY_PRESS,
     PARAGRAPH_UPDATE,
     CLICK,
     SELECT_RANGE,
     START_COMMAND,
+
 }
 
 
@@ -57,6 +60,10 @@ export class StateMachine {
             this.lastRange = common.getCurrRange();
             common.getImageInputElem().style.display = "block";
 
+        } else if (this.inlineCommand === "/code") {
+            common.logMessage("Captured /code command.");
+            this.lastRange = common.getCurrRange();
+            common.getCodeInputElem().style.display = "blocK";
         }
     }
 
@@ -67,26 +74,48 @@ export class StateMachine {
         if (this.state == State.IN_PARAGRAPH) {
             if (event == ActionEvent.ENTRY_KEY_PRESS) {
                 this.inlineCommand = "";
-                this.state = State.TYPING_COMMAND_OR_STAY_IN_PARAGRAPH;
             } else if (event == ActionEvent.START_COMMAND) {
                 this.inlineCommand = "/"
+            } else if (event == ActionEvent.APOSTROPHE_KEY_PRESS) {
+                this.lastRange = common.getCurrRange();
+                this.state = State.INLINE_QUOTE_MODE;
             }
-        } else if (this.state == State.TYPING_COMMAND_OR_STAY_IN_PARAGRAPH) {
-            if (event == ActionEvent.START_COMMAND) {
-                this.state = State.TYPING_COMMAND;
-                this.inlineCommand = "/";
-            } else if (event == ActionEvent.PARAGRAPH_UPDATE) {
+        } else if (this.state == State.INLINE_QUOTE_MODE) {
+            if (event == ActionEvent.APOSTROPHE_KEY_PRESS) {
+                this.handleInlineQuote();
                 this.state = State.IN_PARAGRAPH;
             }
-
-        } else if (this.state == State.TYPING_COMMAND) {
-
         }
+
+
         let currentStateName = State[this.state];
 
         document.getElementById("state")!.innerText = currentStateName;
         document.getElementById("event")!.innerText = eventName;
         console.log(`StateMachine: received event ${eventName}. Transit from ${prevStateName} to ${currentStateName}. inlineCommand=${this.inlineCommand}`);
+    }
+
+    handleInlineQuote() {
+        common.logMessage("Handling inline quote.");
+        let currentRange = common.getCurrRange()!;
+        let refNode = currentRange.startContainer;
+        let startOffset = this.lastRange?.startOffset;
+
+        if (startOffset !== undefined) {
+            currentRange.setStart(refNode, startOffset);
+            let fragment = currentRange.cloneContents();
+            if (fragment.textContent !== null) {
+                console.log("text content: |" + fragment.textContent + "|" );
+                fragment.textContent = fragment.textContent.slice(1);
+            }
+            currentRange.deleteContents();
+            let elem = document.createElement("code")
+            elem.appendChild(fragment);
+            currentRange.insertNode(elem);
+            currentRange.setEndAfter(elem);
+            currentRange.setStartAfter(elem);
+        }
+
     }
 
     reset_link_input() {
