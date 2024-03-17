@@ -17,7 +17,7 @@ export enum ActionEvent {
     CLICK,
     SELECT_RANGE,
     START_COMMAND,
-
+    TOGGLE_BOLD,
 }
 
 
@@ -58,7 +58,8 @@ export class StateMachine {
         } else if (this.inlineCommand === "/image") {
             common.logMessage("Captured the /image command.");
             this.lastRange = common.getCurrRange();
-            common.getImageInputElem().style.display = "block";
+            common.setImageInputBoxToCreationMode();
+            common.displayImageInputBox();
 
         } else if (this.inlineCommand === "/code") {
             common.logMessage("Captured /code command.");
@@ -79,6 +80,8 @@ export class StateMachine {
             } else if (event == ActionEvent.APOSTROPHE_KEY_PRESS) {
                 this.lastRange = common.getCurrRange();
                 this.state = State.INLINE_QUOTE_MODE;
+            } else if (event == ActionEvent.TOGGLE_BOLD) {
+                this.handleToggleBold();
             }
         } else if (this.state == State.INLINE_QUOTE_MODE) {
             if (event == ActionEvent.APOSTROPHE_KEY_PRESS) {
@@ -116,6 +119,60 @@ export class StateMachine {
             currentRange.setStartAfter(elem);
         }
 
+    }
+
+    handleToggleBold() {
+        console.log("Handle toggle bold.");
+        let range = common.getCurrRange();
+        if (range !== null) {
+            let node = range!.startContainer;
+            console.log(`handleToggleBold: node type is ${node.nodeType}, node name is ${node.nodeName}`);
+            // In this implementation, we only focus on simple case where the selection is text.
+
+
+
+            if (node.nodeType === Node.TEXT_NODE) {
+
+                let refNode = range.startContainer;
+                console.log(`Ref node name: ${refNode.nodeName}, parent node name: ${refNode.parentNode!.nodeName}`);
+                let parentNode = refNode.parentNode!;
+
+                if (parentNode.nodeType === Node.ELEMENT_NODE && parentNode.nodeName === "B") {
+                    console.log("Make selection un-bold.");
+                    let boldEnclosingElem = parentNode as HTMLElement;
+                    range.setStartBefore(parentNode.parentNode!);
+                    range.setEndAfter(parentNode.parentNode!);
+                    range.deleteContents();
+                    boldEnclosingElem.childNodes.forEach(cn => range.insertNode(cn));
+
+                } else {
+                    // In this case, we will make the selection bold.
+                    console.log("Make selection bold.");
+
+                    let enclosingElem = document.createElement("div");
+                    enclosingElem.classList.add("component_bold");
+
+                    let boldElem = document.createElement("b");
+                    let childNodes = node.childNodes;
+
+                    if (childNodes.length == 0) {
+                        boldElem.appendChild(range.cloneContents());
+                    } else {
+                        childNodes.forEach(cn => {
+                            console.log("\tchild node name: " + cn.nodeName);
+                            boldElem.appendChild(cn);
+                        })
+                    }
+
+                    enclosingElem.appendChild(boldElem);
+                    range!.deleteContents();
+                    range!.insertNode(enclosingElem);
+
+                }
+
+
+            }
+        }
     }
 
     reset_link_input() {

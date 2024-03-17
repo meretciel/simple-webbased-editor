@@ -3,6 +3,8 @@ import {ActionEvent, State, StateMachine} from "./state.js";
 
 console.log("This is a test")
 
+let PRESSED_KEYS = new Set();
+
 interface ElemRange {
     startIndex: number;
     endIndex: number;
@@ -59,7 +61,19 @@ function handleKeyDownEvent(event: KeyboardEvent, stateMachine: StateMachine) {
         if (stateMachine.state === State.IN_PARAGRAPH) {
             event.preventDefault();
         }
+    } else if (event.key === "b") {
+        if (PRESSED_KEYS.has("Control")) {
+            event.preventDefault();
+            stateMachine.toNextState(ActionEvent.TOGGLE_BOLD)
+        }
     }
+
+    PRESSED_KEYS.add(event.key);
+}
+
+function handleKeyUpEvent(event: KeyboardEvent, stateMachine: StateMachine) {
+    PRESSED_KEYS.delete(event.key);
+
 }
 
 class ContentManager {
@@ -82,8 +96,8 @@ class ContentManager {
         elem.innerHTML="<br>";
         elem.oninput = (event: InputEvent) => divOnChange(event, this.stateMachine);
         elem.onkeydown = (event: KeyboardEvent) => handleKeyDownEvent(event, this.stateMachine);
+        elem.onkeyup = (event: KeyboardEvent) => handleKeyUpEvent(event, this.stateMachine);
         main?.appendChild(elem);
-
     }
 }
 

@@ -76,12 +76,6 @@
             width: 40vw;
         }
 
-        div#link_input_box {
-            margin: auto;
-            border: 1px solid red;
-            width: 50vw;
-        }
-
         div.button {
             background-color: aqua;
             width: 200px;
@@ -92,6 +86,22 @@
         div.component_link {
             display: inline-block;
             cursor: pointer;
+        }
+
+        div.component_bold {
+            display: inline-block;
+            padding: 0px;
+        }
+
+
+        div.input_box {
+            position: fixed;
+            width: 80vw;
+            margin: auto;
+            top: 40vh;
+            left: 10vw;
+            border: 5px solid lightskyblue;
+            background-color: azure;
         }
 
 
@@ -136,7 +146,7 @@
 <div id="buffer">
 </div>
 
-<div id="link_input_box" style="display:none">
+<div id="link_input_box" style="display:none" class="input_box">
     <table>
         <tr>
             <td><label>Display text:</label></td>
@@ -148,12 +158,13 @@
         </tr>
     </table>
     <div id="link_input_box_submit" class="button" onclick="submit_link()">Submit</div>
+    <div id="link_input_box_update" class="button" style="display:none">Update</div>
     <div id="link_input_box_cancel" class="button" onclick="cancel_link()">Cancel</div>
     <div id="link_input_box_delete" class="button" >Delete</div>
 </div>
 
 
-<div id="image_input_box" style="display:none">
+<div id="image_input_box" style="display:none" class="input_box">
     <table>
         <tr>
             <td><label>Image File:</label></td>
@@ -169,6 +180,7 @@
         </tr>
     </table>
     <div id="image_input_box_submit" class="button" onclick="submitImage()">Submit</div>
+    <div id="image_input_box_update" class="button" style="display: none">Update</div>
     <div id="image_input_box_cancel" class="button" onclick="cancelImage()">Cancel</div>
     <div id="image_input_box_delete" class="button" >Delete</div>
     <div id="image_input_box_preview"></div>
@@ -176,7 +188,7 @@
 
 
 
-<div id="code_input_box" style="display:none">
+<div id="code_input_box" style="display:none" class="input_box">
 
     <table>
     <tr>
@@ -187,10 +199,11 @@
 
     <label>Code:</label>
     <div>
-        <textarea id="code_input_source_code" cols="90" rows="20"></textarea>
+        <textarea id="code_input_source_code" cols="120" rows="20"></textarea>
     </div>
 
     <div id="code_input_box_submit" class="button" onclick="submitCode()">Submit</div>
+    <div id="code_input_box_update" class="button" style="display:none">Update</div>
     <div id="code_input_box_cancel" class="button" onclick="cancelCode()">Cancel</div>
     <div id="code_input_box_delete" class="button" >Delete</div>
 </div>
