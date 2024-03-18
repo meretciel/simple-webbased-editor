@@ -111,4 +111,35 @@ export function setCodeInputToUpdateMode() {
     getCodeInputUpdateButton().style.display = "inline-block";
 }
 
+// Header Input Section
+export function getHeaderInputElem(): HTMLElement {return document.getElementById("header_input_box")!;}
+
+export function displayHeaderInputElem() {
+    getHeaderInputElem().style.display = "block";
+    getHeaderInputHeaderLine().focus();
+}
+
+export function hideHeaderInputElem() {
+    getHeaderInputHeaderLevel().value = "";
+    getHeaderInputHeaderLine().value = "";
+    getHeaderInputElem().style.display = "none";
+}
+
+export function setHeaderInputToUpdateMode() {
+    getHeaderInputSubmitButton().style.display = "none";
+    getHeaderInputUpdateButton().style.display = "inline-block";
+}
+
+export function setHeaderInputToCreationMode() {
+    getHeaderInputSubmitButton().style.display = "inline-block";
+    getHeaderInputUpdateButton().style.display = "none";
+}
+
+export function getHeaderInputHeaderLine(): HTMLInputElement {return document.getElementById("header_input_header_line")! as HTMLInputElement;}
+export function getHeaderInputHeaderLevel(): HTMLInputElement {return document.getElementById("header_input_header_level")! as HTMLInputElement;}
+export function getHeaderInputSubmitButton(): HTMLElement {return document.getElementById("header_input_box_submit")!;}
+export function getHeaderInputUpdateButton(): HTMLElement {return document.getElementById("header_input_box_update")!;}
+export function getHeaderInputDeleteButton(): HTMLElement {return document.getElementById("header_input_box_delete")!;}
+
+
 export let STATE_MACHINE = new StateMachine();

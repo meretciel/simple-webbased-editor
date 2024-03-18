@@ -74,6 +74,8 @@ export class StateMachine {
             common.logMessage("Captured /list command.");
             this.handleStartOfListCommand();
             this.state = State.IN_LIST;
+        } else if (["/h1", "/h2", "/h3", "/h4", "/h5"].includes(this.inlineCommand!)) {
+            this.handleHeaderCommand();
         }
     }
 
@@ -274,6 +276,18 @@ export class StateMachine {
             range.insertNode(item);
             range.selectNodeContents(item);
         }
+    }
+
+    handleHeaderCommand() {
+        this.lastRange = common.getCurrRange();
+        common.getHeaderInputHeaderLevel().value = this.inlineCommand!.substring(1);
+        common.getHeaderInputHeaderLine().onkeydown = (event: KeyboardEvent) => {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                common.getHeaderInputSubmitButton().click();
+            }
+        }
+        common.displayHeaderInputElem();
     }
 
     reset_link_input() {

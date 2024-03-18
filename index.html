@@ -132,6 +132,7 @@
 
     import {submitImage, cancelImage} from "./dist/image_input.js";
     import {submitCode, cancelCode} from "./dist/code_input.js"
+    import {submitHeader, cancelHeader} from "./dist/header_input.js"
 
     window.submit_link = submit_link;
     window.cancel_link = cancel_link;
@@ -140,6 +141,8 @@
     window.cancelImage = cancelImage;
     window.submitCode = submitCode;
     window.cancelCode = cancelCode;
+    window.submitHeader = submitHeader;
+    window.cancelHeader = cancelHeader;
 </script>
 
 <h3>Buffer</h3>
@@ -208,5 +211,24 @@
     <div id="code_input_box_delete" class="button" >Delete</div>
 </div>
 
+
+<div id="header_input_box" style="display:none" class="input_box">
+    <table>
+        <tr>
+            <td><label>Header Level:</label></td>
+            <td class="large"><input type="text" id="header_input_header_level" autocomplete="false"/></td>
+        </tr>
+
+        <tr>
+            <td><label>Header:</label></td>
+            <td class="large"><input type="text" id="header_input_header_line" autocomplete="false"/></td>
+        </tr>
+
+    </table>
+    <div id="header_input_box_submit" class="button" onclick="submitHeader()">Submit</div>
+    <div id="header_input_box_update" class="button" style="display: none">Update</div>
+    <div id="header_input_box_delete" class="button" >Delete</div>
+    <div id="header_input_box_cancel" class="button" onclick="cancelHeader()">Cancel</div>
+</div>
 
 </html>
